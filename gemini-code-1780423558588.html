@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Learning Activity: PC Components & Peripherals</title>
+    <style>
+        :root {
+            --user-primary: #000000;
+            --user-accent: #ffcc00;
+            --user-background: #ffffff;
+            --text-muted: #454545;
+            --error-color: #ba0000;
+            --success-color: #006600;
+            --focus-outline: #005fcc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--user-primary);
+            background-color: var(--user-background);
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            border-bottom: 3px solid var(--user-primary);
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2.25rem;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        /* Introduction & AI-Resistance Section */
+        .section-box {
+            border: 2px solid var(--user-primary);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            background-color: #f9f9f9;
+        }
+
+        .section-box h2 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .badge {
+            background-color: var(--user-accent);
+            color: var(--user-primary);
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 0.25rem 0.5rem;
+            text-transform: uppercase;
+            border: 1px solid var(--user-primary);
+        }
+
+        ol, ul {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 0.7rem;
+            border: 2px solid var(--user-primary);
+            font-family: inherit;
+            font-size: 1rem;
+            margin-top: 0.5rem;
+            resize: vertical;
+        }
+
+        textarea:focus, .hotspot:focus, button:focus, select:focus {
+            outline: 3px solid var(--focus-outline);
+            outline-offset: 2px;
+        }
+
+        /* Diagram Workspace Layout */
+        .workspace-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .workspace-grid {
+                grid-template-columns: 1.2fr 1fr;
+            }
+        }
+
+        /* SVG Hotspot Diagram Diagram styling */
+        .diagram-container {
+            position: relative;
+            border: 2px solid var(--user-primary);
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .diagram-svg {
+            width: 100%;
+            height: auto;
+            max-height: 500px;
+        }
+
+        .hotspot {
+            cursor: pointer;
+            fill: #ffffff;
+            fill-opacity: 0.2;
+            stroke: var(--user-primary);
+            stroke-width: 2;
+            transition: all 0.2s ease;
+        }
+
+        .hotspot:hover, .hotspot:focus {
+            fill: var(--user-accent);
+            fill-opacity: 0.6;
+            stroke-width: 3;
+        }
+
+        .hotspot.active {
+            fill: var(--user-accent);
+            fill-opacity: 0.8;
+            stroke: var(--user-primary);
+            stroke-width: 4;
+        }
+
+        /* Info Display / Details Panel */
+        .details-panel {
+            border: 2px solid var(--user-primary);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .panel-header {
+            background-color: var(--user-primary);
+            color: #ffffff;
+            padding: 0.75rem 1rem;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .panel-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .placeholder-text {
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .component-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 0.25rem;
+        }
+
+        .component-type {
+            display: inline-block;
+            background: #eee;
+            border: 1px solid var(--user-primary);
+            padding: 0.1rem 0.5rem;
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .pitfall-box {
+            margin-top: 1rem;
+            background-color: #fff8e1;
+            border-left: 4px solid #ffb300;
+            padding: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        /* Knowledge Check Section */
+        .quiz-container {
+            border: 2px solid var(--user-primary);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .quiz-question {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px dashed #ccc;
+        }
+
+        .quiz-question:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .question-text {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .options-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .option-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            cursor: pointer;
+            padding: 0.4rem;
+            border: 1px solid transparent;
+        }
+
+        .option-label:hover {
+            background-color: #f5f5f5;
+        }
+
+        .option-label input {
+            margin-top: 0.3rem;
+        }
+
+        .feedback {
+            margin-top: 0.5rem;
+            font-weight: bold;
+            padding: 0.5rem;
+            display: none;
+        }
+
+        .feedback.correct {
+            display: block;
+            color: var(--success-color);
+            background-color: #e6f4ea;
+            border-left: 4px solid var(--success-color);
+        }
+
+        .feedback.incorrect {
+            display: block;
+            color: var(--error-color);
+            background-color: #fce8e6;
+            border-left: 4px solid var(--error-color);
+        }
+
+        .action-btn {
+            background-color: var(--user-primary);
+            color: #ffffff;
+            border: 2px solid var(--user-primary);
+            padding: 0.6rem 1.2rem;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            background-color: var(--user-accent);
+            color: var(--user-primary);
+        }
+
+        /* Visually Hidden for Screen Readers */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        /* Live Region Banner */
+        .announcer {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Hardware Architecture Interface</h1>
+        <div class="subtitle">CS 101: Core Systems & Peripheral Topologies</div>
+    </header>
+
+    <div id="aria-announcer" class="announcer" aria-live="assertive" aria-atomic="true"></div>
+
+    <section class="section-box" aria-labelledby="phase1-title">
+        <h2 id="phase1-title"><span class="badge">Task 1</span> Local Campus Hardware Verification</h2>
+        <p>To contextualize this lab inside your local learning ecosystem, visit a campus computing resource (the library computer lab, an IT help desk display, or a classroom workstation terminal) and fulfill the following requirement:</p>
+        
+        <label for="local-artifact-input" style="display: block; margin-top: 1rem; font-weight: bold;">
+            Identify the precise building, room number, and the Asset Tag ID number (or model identifier) of a real workstation. Document which specialized video or peripheral connectors are physically exposed on its external I/O panel:
+        </label>
+        <textarea id="local-artifact-input" placeholder="e.g., Engineering Hall Room 204, Asset Tag #CC-99482. The external panel exposes two DisplayPort outputs, one legacy VGA port, and a USB-C Thunderbolt interface..."></textarea>
+    </section>
+
+    <section aria-labelledby="phase2-title" style="margin-bottom: 2rem;">
+        <h2 id="phase2-title" style="margin-bottom: 1rem;"><span class="badge">Task 2</span> Component & Peripheral Topology Map</h2>
+        <p style="margin-bottom: 1.5rem;">Select any hotspot zone inside the computer system block diagram below to review its hardware function, structural hierarchy, and common configuration pitfalls.</p>
+
+        <div class="workspace-grid">
+            <div class="diagram-container">
+                <svg viewBox="0 0 600 550" class="diagram-svg" aria-label="System block diagram containing interactive hotspots for internal elements and external peripheral architectural buses.">
+                    <rect x="10" y="80" width="400" height="450" fill="#e0e0e0" stroke="#000000" stroke-width="3" />
+                    <text x="20" y="105" font-family="sans-serif" font-weight="bold" font-size="14" fill="#555">SYSTEM CASE / MOTHERBOARD</text>
+
+                    <rect x="40" y="130" width="100" height="100" fill="#fff" stroke="#000" stroke-width="2"/>
+                    <path d="M 40 150 L 140 150 M 40 170 L 140 170 M 40 190 L 140 190 M 40 210 L 140 210" stroke="#ccc" stroke-width="1"/>
+                    <text x="55" y="185" font-family="sans-serif" font-weight="bold" font-size="18">CPU</text>
+                    <rect id="hotspot-cpu" class="hotspot" x="40" y="130" width="100" height="100" rx="4" role="button" tabindex="0" aria-label="Central Processing Unit Hotspot" />
+
+                    <g>
+                        <rect x="170" y="130" width="20" height="100" fill="#fff" stroke="#000" />
+                        <rect x="200" y="130" width="20" height="100" fill="#fff" stroke="#000" />
+                        <line x1="170" y1="180" x2="190" y2="180" stroke="#000" />
+                        <line x1="200" y1="180" x2="220" y2="180" stroke="#000" />
+                        <text x="175" y="220" font-family="sans-serif" font-size="10" transform="rotate(-90 175 220)">RAM SLOTS</text>
+                        <rect id="hotspot-ram" class="hotspot" x="165" y="125" width="65" height="110" rx="4" role="button" tabindex="0" aria-label="Random Access Memory Hotspot" />
+                    </g>
+
+                    <g>
+                        <rect x="40" y="270" width="220" height="50" fill="#fff" stroke="#000" />
+                        <text x="50" y="300" font-family="sans-serif" font-weight="bold" font-size="14">GPU (PCIe Expansion)</text>
+                        <rect id="hotspot-gpu" class="hotspot" x="40" y="270" width="220" height="50" rx="4" role="button" tabindex="0" aria-label="Graphics Processing Unit Expansion Card Hotspot" />
+                    </g>
+
+                    <g>
+                        <rect x="40" y="360" width="130" height="70" fill="#fff" stroke="#000" />
+                        <text x="50" y="400" font-family="sans-serif" font-weight="bold" font-size="14">SSD / Storage</text>
+                        <rect id="hotspot-storage" class="hotspot" x="40" y="360" width="130" height="70" rx="4" role="button" tabindex="0" aria-label="Solid State Storage Drive Hotspot" />
+                    </g>
+
+                    <g>
+                        <rect x="40" y="450" width="340" height="60" fill="#fff" stroke="#000" />
+                        <text x="140" y="485" font-family="sans-serif" font-weight="bold" font-size="14">Power Supply Unit (PSU)</text>
+                        <rect id="hotspot-psu" class="hotspot" x="40" y="450" width="340" height="60" rx="4" role="button" tabindex="0" aria-label="Power Supply Unit Hotspot" />
+                    </g>
+
+                    <path d="M 260 295 L 450 295" stroke="#000" stroke-width="2" stroke-dasharray="4" />
+                    <path d="M 140 180 L 450 45" stroke="#000" stroke-width="2" stroke-dasharray="4" />
+
+                    <g>
+                        <rect x="450" y="10" width="130" height="70" fill="#fff" stroke="#000" />
+                        <text x="460" y="40" font-family="sans-serif" font-weight="bold" font-size="12">Input Peripherals</text>
+                        <text x="460" y="55" font-family="sans-serif" font-size="10">(Keyboard / Mouse)</text>
+                        <rect id="hotspot-input" class="hotspot" x="450" y="10" width="130" height="70" rx="4" role="button" tabindex="0" aria-label="Input Peripherals Hotspot" />
+                    </g>
+
+                    <g>
+                        <rect x="450" y="260" width="130" height="80" fill="#fff" stroke="#000" />
+                        <rect x="495" y="340" width="40" height="30" fill="#fff" stroke="#000" />
+                        <line x1="475" y1="370" x2="555" y2="370" stroke="#000" stroke-width="3" />
+                        <text x="465" y="300" font-family="sans-serif" font-weight="bold" font-size="12">Display Monitor</text>
+                        <rect id="hotspot-output" class="hotspot" x="450" y="260" width="130" height="115" rx="4" role="button" tabindex="0" aria-label="Display Monitor Output Hotspot" />
+                    </g>
+                </svg>
+            </div>
+
+            <div class="details-panel" id="details-panel" aria-live="polite">
+                <div class="panel-header">Architectural Specifications</div>
+                <div class="panel-content" id="panel-content">
+                    <p class="placeholder-text">Click an architectural element or peripheral block on the system map to analyze its hardware properties, standard configurations, and structural domain properties.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="quiz-container" aria-labelledby="quiz-title">
+        <h2 id="quiz-title" style="margin-bottom: 1rem;"><span class="badge">Task 3</span> Core Architectural Review Quiz</h2>
+        <form id="quiz-form" onsubmit="return false;">
+            
+            <div class="quiz-question">
+                <p class="question-text">1. A technician populates two volatile memory modules into arbitrary, adjacent slot topologies (e.g., Slot 1 and Slot 2) instead of following the alternating color-coded configuration specified by the motherboard. What structural performance degradation occurs?</p>
+                <div class="options-list">
+                    <div class="option-item">
+                        <label class="option-label">
+                            <input type="radio" name="q1" value="incorrect1">
+                            <span>The system completely fails to POST and displays an explicit storage sector failure.</span>
+                        </label>
+                    </div>
+                    <div class="option-item">
+                        <label class="option-label">
+                            <input type="radio" name="q1" value="correct">
+                            <span>The memory array is forced to fallback to single-channel bus operations instead of utilizing multi-channel execution paths, severely throttling data transfer throughput.</span>
+                        </label>
+                    </div>
+                    <div class="option-item">
+                        <label class="option-label">
+                            <input type="radio" name="q1" value="incorrect2">
+                            <span>The central execution pipelines automatically scale down their internal voltage registers, permanently damaging the clock oscillators.</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="feedback" id="feedback-q1"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="question-text">2. When interconnecting an external high-refresh-rate ultra-high-definition monitor peripheral to a platform containing both integrated processor graphics and a discrete PCIe expansion graphics card, where must the display interface cable link?</p>
+                <div class="options-list">
+                    <div class="option-item">
+                        <label class="option-label">
+                            <input type="radio" name="q2" value="incorrect1">
+                            <span>Directly to the external I/O cluster on the motherboard frame to conserve discrete pipeline overhead.</span>
+                        </label>
+                    </div>
+                    <div class="option-item">
+                        <label class="option-label">
+                            <input type="radio" name="q2" value="incorrect2">
+                            <span>To any open interface port; modern operating system kernels automatically route the hardware drawing tasks symmetrically across all buses.</span>
+                        </label>
+                    </div>
+                    <div class="option-item">
+                        <label class="option-label">
+                            <input type="radio" name="q2" value="correct">
+                            <span>Directly into the ports embedded on the discrete expansion graphics card panel to utilize its dedicated high-performance rasterization architecture.</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="feedback" id="feedback-q2"></div>
+            </div>
+
+            <button type="button" class="action-btn" onclick="evaluateQuiz()">Evaluate Answers</button>
+        </form>
+    </section>
+</div>
+
+<script>
+    // Data Storage Matrix reflecting technical hardware criteria
+    const hardwareDatabase = {
+        'hotspot-cpu': {
+            title: 'Central Processing Unit (CPU)',
+            type: 'Core Core Processor Execution Engine',
+            desc: 'The master computational execution core of the processing environment. It decodes instructions, manages arithmetic transformations, and controls system-wide synchronization logic across memory and I/O channels.',
+            pitfall: 'Conceptual Pitfall: Students frequently mistake CPU performance purely for clock speeds (GHz). High operational frequencies inside highly congested architectures with suboptimal Instruction-Per-Cycle (IPC) counts can lead to thermal throttling and compromised compute efficiency.'
+        },
+        'hotspot-ram': {
+            title: 'Random Access Memory (RAM)',
+            type: 'Primary Volatile Storage Subsystem',
+            desc: 'High-speed, dynamic volatile hardware array tasked with staging transient runtime instruction sequences and execution states for rapid access by the CPU micro-architecture.',
+            pitfall: 'Configuration Trap: Motherboard channels are typically arranged in specific paired patterns. Inserting dual inline memory modules (DIMMs) next to each other sequentially often violates multi-channel operational rules, forcing the system back into half-bandwidth single-channel operations.'
+        },
+        'hotspot-gpu': {
+            title: 'Graphics Processing Unit (GPU)',
+            type: 'PCIe Expansion Accelerator Node',
+            desc: 'A massive parallel array device designed for matrix math transformations, vector compute steps, frame buffering, and real-time visualization output rendering.',
+            pitfall: 'Integration Oversight: Accidentally seated components into secondary physical PCIe slots on the motherboard might trigger a silent drop to x4 electrical lanes instead of the top slot\'s native x16 configuration, significantly restricting data bus access.'
+        },
+        'hotspot-storage': {
+            title: 'Solid-State Storage (SSD)',
+            type: 'Non-Volatile Secondary Block Storage',
+            desc: 'Persistent solid-state infrastructure configured on NVMe/PCIe or legacy SATA channels to preserve filesystem structural hierarchies, runtime code bases, and user records.',
+            pitfall: 'Architectural Difference: Standard solid state drives (SSDs) read and write at rates far higher than legacy mechanical Hard Disk Drives (HDDs). Connecting an NVMe device to an interface layout that shares shared lanes with open legacy SATA controllers may inadvertently drop speed ceilings down to legacy standards.'
+        },
+        'hotspot-psu': {
+            title: 'Power Supply Unit (PSU)',
+            type: 'Energy Management Transformation System',
+            desc: 'Main infrastructure component converting high-voltage alternating current (AC) lines into clean, regulated direct current (DC) rails (+3.3V, +5V, +12V) allocated for component hardware circuitry.',
+            pitfall: 'System Failure Vulnerability: Selecting basic power components relying purely on total rated capacity (Watts) while neglecting functional rail distribution or independent quality ratings can trigger intermittent memory faults, random resets, or failure states during maximum load phases.'
+        },
+        'hotspot-input': {
+            title: 'Input Peripherals',
+            type: 'Human-Interface Device Class (HID)',
+            desc: 'External devices (mechanical keyboards, optical tracking arrays) converting physical inputs into digital code sequences sent over modern high-speed USB interfaces or wireless protocol baselines.',
+            pitfall: 'Latency Overhead Note: For standard operations, typical USB poll rates are sufficient. In high-precision settings, running connections through unpowered external daisy-chained hubs can introduce significant latency and bus packet drops.'
+        },
+        'hotspot-output': {
+            title: 'Display Monitor Output',
+            type: 'Visual Feedback Peripheral Subsystem',
+            desc: 'An external hardware configuration built to convert rasterized video streams from system pipelines into visual pixel matrices via interface lines like DisplayPort or HDMI.',
+            pitfall: 'Connection Mistake: Plugging a display cable directly into the upper motherboard bracket rather than the lower discrete graphics card panel can bypass high-performance expansion boards entirely, forcing execution tasks onto low-power integrated chips.'
+        }
+    };
+
+    const hotspots = document.querySelectorAll('.hotspot');
+    const panelContent = document.getElementById('panel-content');
+    const announcer = document.getElementById('aria-announcer');
+
+    // Attach interaction handlers to hotspot interfaces
+    hotspots.forEach(hotspot => {
+        // Click Event handling
+        hotspot.addEventListener('click', () => {
+            activateHotspot(hotspot);
+        });
+
+        // Keydown Event handling for accessibility compliance
+        hotspot.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                activateHotspot(hotspot);
+            }
+        });
+    });
+
+    function activateHotspot(selectedElement) {
+        // Reset current active states across all elements
+        hotspots.forEach(h => h.classList.remove('active'));
+        
+        // Apply active layer status to targeted element
+        selectedElement.classList.add('active');
+
+        const componentId = selectedElement.id;
+        const record = hardwareDatabase[componentId];
+
+        if (record) {
+            // Reconstruct the internal DOM elements safely for the descriptive data frame
+            panelContent.innerHTML = `
+                <div class="component-title">${record.title}</div>
+                <div class="component-type">${record.type}</div>
+                <p style="margin-bottom: 1rem;">${record.desc}</p>
+                <div class="pitfall-box">
+                    <strong>Critical Focus Point:</strong><br>${record.pitfall}
+                </div>
+            `;
+
+            // Announce selection state directly to Screen Reader users via ARIA live framework
+            announcer.textContent = `Displaying information for ${record.title}. Type description and common configuration pitfalls have been loaded in the details panel.`;
+        }
+    }
+
+    // Quiz Validation Engine
+    function evaluateQuiz() {
+        let correctAnswers = 0;
+        
+        // Evaluation Sequence for Question 1
+        const q1Selection = document.querySelector('input[name="q1"]:checked');
+        const f1 = document.getElementById('feedback-q1');
+        if (q1Selection) {
+            if (q1Selection.value === 'correct') {
+                f1.textContent = "Correct! Alternating slot distribution is required to complete multi-channel bus paths. Deviating lowers theoretical memory throughput to single-channel operations.";
+                f1.className = "feedback correct";
+                correctAnswers++;
+            } else {
+                f1.textContent = "Incorrect. Review the primary motherboard layout manual. Setting up memory components in adjacent slots often causes configuration issues by disabling dual-channel access.";
+                f1.className = "feedback incorrect";
+            }
+        } else {
+            f1.textContent = "Please select an option.";
+            f1.className = "feedback incorrect";
+        }
+
+        // Evaluation Sequence for Question 2
+        const q2Selection = document.querySelector('input[name="q2"]:checked');
+        const f2 = document.getElementById('feedback-q2');
+        if (q2Selection) {
+            if (q2Selection.value === 'correct') {
+                f2.textContent = "Correct! Hooking display systems up to discrete layout terminals ensures computing jobs bypass the lower-tier integrated graphics hardware, leveraging the discrete card's processing performance.";
+                f2.className = "feedback correct";
+                correctAnswers++;
+            } else {
+                f2.textContent = "Incorrect. Hooking display lines up to the integrated motherboard port can route processing duties away from the discrete expansion card, running tasks on integrated chip layers instead.";
+                f2.className = "feedback incorrect";
+            }
+        } else {
+            f2.textContent = "Please select an option.";
+            f2.className = "feedback incorrect";
+        }
+
+        // Final aggregate status report pushed directly out via live screen announcer
+        announcer.textContent = `Evaluation complete. You successfully answered ${correctAnswers} out of 2 validation questions correctly. Review updated page markers for diagnostic feedback.`;
+    }
+</script>
+
+</body>
+</html>
