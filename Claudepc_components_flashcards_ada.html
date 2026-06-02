@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PC Components Flashcards</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c10;
+    --panel: #0f1318;
+    --border: #3a4d5e;
+    --accent: #00d4ff;
+    --accent2: #ff8c5a;
+    --accent3: #7fff5f;
+    --text: #e8f0f8;
+    --dim: #8aabb8;
+    --card-front: #0d1520;
+    --card-back: #0d1a10;
+    --focus-ring: #ffdd57;
+    --glow: 0 0 20px rgba(0,212,255,0.3);
+  }
+
+  /* Skip link */
+  .skip-link {
+    position: absolute;
+    top: -100px;
+    left: 8px;
+    background: var(--focus-ring);
+    color: #000;
+    padding: 10px 18px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 6px;
+    z-index: 9999;
+    text-decoration: none;
+    transition: top 0.2s;
+  }
+  .skip-link:focus { top: 8px; }
+
+  /* Screen reader only */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    font-family: 'Rajdhani', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 16px 40px;
+    background-image:
+      radial-gradient(ellipse at 20% 50%, rgba(0,212,255,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(255,107,53,0.04) 0%, transparent 60%);
+    line-height: 1.5;
+  }
+
+  /* Focus visible — high contrast yellow ring, never hidden */
+  *:focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  *:focus:not(:focus-visible) { outline: none; }
+
+  header {
+    text-align: center;
+    margin-bottom: 28px;
+    width: 100%;
+  }
+
+  .logo-line {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    color: #7dd8f0;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(22px, 5vw, 36px);
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: 2px;
+    text-shadow: 0 0 30px rgba(0,212,255,0.5);
+  }
+
+  h1 span { color: #5de8ff; }
+
+  .subtitle {
+    font-size: 15px;
+    color: #9bbfd4;
+    margin-top: 8px;
+    letter-spacing: 0.5px;
+  }
+
+  /* Progress */
+  .progress-wrap {
+    width: 100%;
+    max-width: 680px;
+    margin: 0 auto 24px;
+  }
+
+  .progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    color: #7dd8f0;
+    margin-bottom: 6px;
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #1e2d3d;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00d4ff, #7fff5f);
+    border-radius: 4px;
+    transition: width 0.4s ease;
+  }
+
+  /* Card stage */
+  .card-stage {
+    perspective: 1200px;
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto 20px;
+  }
+
+  /* The flip container is a button for full keyboard + screen reader access */
+  .card-btn {
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: block;
+    border-radius: 16px;
+  }
+
+  .card-btn:focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 4px;
+    border-radius: 18px;
+  }
+
+  .card-inner {
+    position: relative;
+    width: 100%;
+    min-height: 340px;
+    transform-style: preserve-3d;
+    transition: transform 0.65s cubic-bezier(0.23, 1, 0.32, 1);
+    border-radius: 16px;
+  }
+
+  .card-inner.flipped { transform: rotateY(180deg); }
+
+  /* Respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .card-inner { transition: none; }
+    .progress-fill { transition: none; }
+    .flip-hint { animation: none; opacity: 0.7; }
+    @keyframes cardIn { from { opacity: 1; } }
+  }
+
+  .card-face {
+    position: absolute;
+    width: 100%;
+    min-height: 340px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 16px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: left;
+  }
+
+  /* FRONT */
+  .card-front {
+    background: #0d1520;
+    border: 2px solid #2a3f55;
+    box-shadow: var(--glow), inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+
+  .card-front::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(0,212,255,0.06) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .component-num {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: #7dd8f0;
+    letter-spacing: 3px;
+    margin-bottom: 16px;
+  }
+
+  .component-icon {
+    font-size: 52px;
+    margin-bottom: 16px;
+    display: block;
+    line-height: 1;
+    /* icons are decorative; aria-hidden set in HTML */
+  }
+
+  .component-name {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(20px, 4vw, 28px);
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  .component-abbr {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    color: #ff8c5a;
+  }
+
+  .flip-hint {
+    position: absolute;
+    bottom: 20px;
+    right: 24px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: #8aabb8;
+    letter-spacing: 2px;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+
+  /* BACK */
+  .card-back {
+    background: #0d1a10;
+    border: 2px solid rgba(127,255,95,0.3);
+    box-shadow: 0 0 20px rgba(127,255,95,0.15), inset 0 1px 0 rgba(255,255,255,0.03);
+    transform: rotateY(180deg);
+  }
+
+  .back-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: #7fff5f;
+    letter-spacing: 3px;
+    margin-bottom: 12px;
+  }
+
+  .back-component-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 17px;
+    font-weight: 700;
+    color: #7fff5f;
+    margin-bottom: 16px;
+    letter-spacing: 1px;
+  }
+
+  .section-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: #5de8ff;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .definition {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #e8f0f8;
+    margin-bottom: 18px;
+    border-left: 3px solid #7fff5f;
+    padding-left: 12px;
+  }
+
+  .example-block {
+    background: rgba(0,0,0,0.35);
+    border: 1px solid rgba(127,255,95,0.2);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+
+  .example-text {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: #b0d8b0;
+    line-height: 1.7;
+  }
+
+  /* Controls */
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto 24px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    font-family: 'Orbitron', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    padding: 13px 20px;
+    border: 2px solid #3a4d5e;
+    background: transparent;
+    color: #9bbfd4;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+    min-width: 100px;
+    min-height: 48px; /* WCAG touch target */
+  }
+
+  .btn:hover:not(:disabled) {
+    border-color: #00d4ff;
+    color: #00d4ff;
+    background: rgba(0,212,255,0.07);
+  }
+
+  .btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .btn-flip {
+    flex: 1;
+    min-width: 160px;
+    border-color: #7fff5f;
+    color: #7fff5f;
+    background: rgba(127,255,95,0.05);
+  }
+
+  .btn-flip:hover:not(:disabled) {
+    background: rgba(127,255,95,0.12);
+    border-color: #7fff5f;
+    color: #7fff5f;
+  }
+
+  /* Nav dots */
+  .nav-section {
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto 12px;
+  }
+
+  .nav-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: #8aabb8;
+    letter-spacing: 3px;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .nav-dots {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .dot {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    border: 2px solid #3a4d5e;
+    background: transparent;
+    cursor: pointer;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: #8aabb8;
+    transition: all 0.2s;
+    min-height: 44px; /* WCAG touch target */
+    min-width: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dot:hover {
+    border-color: #00d4ff;
+    color: #00d4ff;
+    background: rgba(0,212,255,0.07);
+  }
+
+  .dot.active {
+    background: #00d4ff;
+    border-color: #00d4ff;
+    color: #000;
+    font-weight: 700;
+  }
+
+  .dot.seen {
+    border-color: #7fff5f;
+    color: #7fff5f;
+  }
+
+  /* Keyboard shortcut legend */
+  .legend {
+    width: 100%;
+    max-width: 640px;
+    margin: 16px auto 0;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid #1e2d3d;
+    border-radius: 10px;
+    padding: 14px 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 24px;
+  }
+
+  .legend-item {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: #8aabb8;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  kbd {
+    display: inline-block;
+    background: #1e2d3d;
+    border: 1px solid #3a4d5e;
+    border-radius: 4px;
+    padding: 2px 7px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: #00d4ff;
+    line-height: 1.6;
+  }
+
+  /* Live region for screen readers */
+  #liveAnnounce {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+  }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(16px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .card-stage { animation: cardIn 0.35s ease; }
+
+  /* High contrast media query support */
+  @media (forced-colors: active) {
+    .card-front, .card-back { border: 2px solid ButtonText; }
+    .btn { border: 2px solid ButtonText; }
+    .progress-fill { background: Highlight; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Skip navigation link -->
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<!-- Live region for screen reader announcements -->
+<div id="liveAnnounce" aria-live="polite" aria-atomic="true" role="status"></div>
+
+<header role="banner">
+  <div class="logo-line" aria-hidden="true">CIS 101 · Computer Hardware · Study Tool</div>
+  <h1>PC <span>Components</span></h1>
+  <p class="subtitle">12 interactive flashcards — click, tap, or use keyboard to flip</p>
+</header>
+
+<main id="main-content">
+
+  <!-- Progress -->
+  <section aria-label="Study progress" class="progress-wrap">
+    <div class="progress-info">
+      <span id="progressText">Cards reviewed: 0 of 12</span>
+      <span id="progressPct">0%</span>
+    </div>
+    <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="12" aria-labelledby="progressText" id="progressBar">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+  </section>
+
+  <!-- Flashcard -->
+  <div class="card-stage" id="cardStage">
+    <button
+      class="card-btn"
+      id="cardBtn"
+      aria-label="Flashcard 1 of 12: CPU — front side. Press Space or Enter to flip."
+      aria-pressed="false"
+      onclick="flipCard()"
+    >
+      <div class="card-inner" id="cardInner" role="presentation">
+        <div class="card-face card-front" id="cardFront" aria-hidden="false"></div>
+        <div class="card-face card-back"  id="cardBack"  aria-hidden="true"></div>
+      </div>
+    </button>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls" role="group" aria-label="Card navigation">
+    <button class="btn" id="prevBtn" onclick="navigate(-1)" aria-label="Previous card">◀ PREV</button>
+    <button class="btn btn-flip" id="flipBtn" onclick="flipCard()" aria-label="Flip card to see definition">FLIP CARD ↺</button>
+    <button class="btn" id="nextBtn" onclick="navigate(1)" aria-label="Next card">NEXT ▶</button>
+  </div>
+
+  <!-- Dot navigation -->
+  <nav class="nav-section" aria-label="Jump to card">
+    <span class="nav-label" id="dotLabel">JUMP TO CARD</span>
+    <div class="nav-dots" id="navDots" role="list" aria-labelledby="dotLabel"></div>
+  </nav>
+
+  <!-- Keyboard shortcut legend -->
+  <section class="legend" aria-label="Keyboard shortcuts">
+    <div class="legend-item"><kbd>Space</kbd> / <kbd>Enter</kbd> Flip card</div>
+    <div class="legend-item"><kbd>←</kbd> Previous</div>
+    <div class="legend-item"><kbd>→</kbd> Next</div>
+    <div class="legend-item"><kbd>1</kbd>–<kbd>9</kbd> Jump to card</div>
+  </section>
+
+</main>
+
+<script>
+const components = [
+  { icon:"🧠", name:"CPU", abbr:"Central Processing Unit",
+    definition:"The brain of the computer. It performs calculations and executes instructions from programs. Clock speed is measured in GHz; higher = faster processing.",
+    example:"Intel Core i7-13700K (3.4 GHz) or AMD Ryzen 5 7600X — the processor that runs your OS, browser, and apps simultaneously." },
+  { icon:"🗂️", name:"RAM", abbr:"Random Access Memory",
+    definition:"Temporary, ultra-fast memory that holds data the CPU is actively using. When you close a program, its data is cleared from RAM. More RAM allows more programs open at once.",
+    example:"16 GB DDR5 RAM. Opening Chrome, Word, and Spotify simultaneously draws from RAM to keep all three apps responsive." },
+  { icon:"🏗️", name:"Motherboard", abbr:"Main Circuit Board",
+    definition:"The primary circuit board connecting all components. It provides slots and pathways (buses) for the CPU, RAM, GPU, and storage to communicate.",
+    example:"ASUS ROG Strix Z790-E. Think of it as the city map — every component plugs in like buildings on a street grid." },
+  { icon:"💾", name:"SSD", abbr:"Solid State Drive",
+    definition:"High-speed permanent storage with no moving parts. Stores your OS, applications, and files even when powered off. Much faster than traditional hard drives.",
+    example:"Samsung 990 Pro 1 TB NVMe SSD. Your operating system, games, and coursework live here permanently." },
+  { icon:"🖥️", name:"GPU", abbr:"Graphics Processing Unit",
+    definition:"A specialized processor for rendering graphics, video, and parallel computing. Has thousands of small cores optimized for visual calculations.",
+    example:"NVIDIA RTX 4060 or AMD Radeon RX 7600 — powers video games, 4K streaming, and graphic design software." },
+  { icon:"⚡", name:"PSU", abbr:"Power Supply Unit",
+    definition:"Converts AC wall power into DC power for PC components. Rated in watts — more powerful systems need higher-wattage PSUs.",
+    example:"Corsair 650 W 80+ Gold PSU. Like the heart of the PC — if this fails, nothing turns on." },
+  { icon:"❄️", name:"CPU Cooler", abbr:"Thermal Management Unit",
+    definition:"Removes heat from the CPU to prevent overheating and throttling. Options: air coolers (heatsink + fan) or liquid all-in-one (AIO) coolers.",
+    example:"Noctua NH-D15 (air) or Corsair H100i (liquid). Without cooling, a CPU can exceed 100°C and shut down automatically." },
+  { icon:"📦", name:"PC Case", abbr:"Computer Chassis",
+    definition:"The enclosure housing and protecting all internal components. Sizes include Full Tower, Mid Tower, and Mini-ITX. Includes airflow vents and drive bays.",
+    example:"NZXT H510 Mid Tower. Like a skeleton — it gives the system structure and keeps everything organized." },
+  { icon:"💿", name:"HDD", abbr:"Hard Disk Drive",
+    definition:"A magnetic storage device with spinning platters. Slower than SSDs but offers large storage at a lower cost per gigabyte. Common for bulk file backup.",
+    example:"Seagate Barracuda 2 TB HDD. Ideal for storing photo libraries, videos, and backups affordably." },
+  { icon:"📡", name:"NIC", abbr:"Network Interface Card",
+    definition:"Hardware enabling a PC to connect to a network via Ethernet (wired) or Wi-Fi (wireless). Most modern motherboards include a built-in NIC.",
+    example:"Intel Wi-Fi 6E AX210 — the component that connects your laptop to campus Wi-Fi." },
+  { icon:"🔊", name:"Sound Card", abbr:"Audio Processing Unit",
+    definition:"Processes audio signals for speakers and microphones. Integrated audio chips are on most motherboards; dedicated cards provide higher fidelity.",
+    example:"Creative Sound Blaster AE-9. A music production student might use this for studio-quality recording." },
+  { icon:"🔌", name:"BIOS / UEFI", abbr:"Basic Input/Output System",
+    definition:"Firmware on a motherboard chip that runs before the OS loads. Performs a Power-On Self-Test (POST) and tells the computer how to boot from storage.",
+    example:"Press DEL or F2 at startup to enter BIOS. It checks RAM and CPU connections, then hands control to Windows or Linux." }
+];
+
+let current = 0;
+let isFlipped = false;
+let seen = new Set();
+
+function announce(msg) {
+  const el = document.getElementById('liveAnnounce');
+  el.textContent = '';
+  setTimeout(() => { el.textContent = msg; }, 50);
+}
+
+function renderCard() {
+  const c = components[current];
+  const front = document.getElementById('cardFront');
+  const back  = document.getElementById('cardBack');
+
+  front.innerHTML = `
+    <div class="component-num" aria-hidden="true">CARD ${String(current+1).padStart(2,'0')} OF ${components.length}</div>
+    <span class="component-icon" aria-hidden="true">${c.icon}</span>
+    <div class="component-name">${c.name}</div>
+    <div class="component-abbr">${c.abbr}</div>
+    <span class="flip-hint" aria-hidden="true">CLICK TO FLIP ▶</span>
+  `;
+
+  back.innerHTML = `
+    <div class="back-tag" aria-hidden="true">▶ DEFINITION + EXAMPLE</div>
+    <div class="back-component-name">${c.icon} ${c.name}</div>
+    <h2 class="section-label">Definition</h2>
+    <p class="definition">${c.definition}</p>
+    <div class="example-block">
+      <h2 class="section-label" style="margin-bottom:8px">Real-World Example</h2>
+      <p class="example-text">${c.example}</p>
+    </div>
+  `;
+
+  // Update card button ARIA
+  const btn = document.getElementById('cardBtn');
+  btn.setAttribute('aria-label',
+    `Card ${current+1} of ${components.length}: ${c.name} — ${isFlipped ? 'back side showing definition' : 'front side'}. Press Space or Enter to flip.`);
+  btn.setAttribute('aria-pressed', isFlipped ? 'true' : 'false');
+
+  // aria-hidden on faces
+  document.getElementById('cardFront').setAttribute('aria-hidden', isFlipped ? 'true' : 'false');
+  document.getElementById('cardBack').setAttribute('aria-hidden',  isFlipped ? 'false' : 'true');
+
+  updateDots();
+  updateProgress();
+}
+
+function flipCard() {
+  isFlipped = !isFlipped;
+  document.getElementById('cardInner').classList.toggle('flipped', isFlipped);
+
+  const c = components[current];
+  const btn = document.getElementById('cardBtn');
+  const flipBtn = document.getElementById('flipBtn');
+
+  document.getElementById('cardFront').setAttribute('aria-hidden', isFlipped ? 'true' : 'false');
+  document.getElementById('cardBack').setAttribute('aria-hidden',  isFlipped ? 'false' : 'true');
+
+  btn.setAttribute('aria-label',
+    `Card ${current+1} of ${components.length}: ${c.name} — ${isFlipped ? 'back side, showing definition and example' : 'front side'}. Press Space or Enter to flip.`);
+  btn.setAttribute('aria-pressed', isFlipped ? 'true' : 'false');
+
+  flipBtn.textContent = isFlipped ? 'FLIP BACK ↺' : 'FLIP CARD ↺';
+  flipBtn.setAttribute('aria-label', isFlipped ? 'Flip card back to front' : 'Flip card to see definition');
+
+  if (isFlipped) {
+    seen.add(current);
+    updateProgress();
+    announce(`${c.name}: ${c.definition}`);
+  } else {
+    announce(`Front of card: ${c.name}, ${c.abbr}`);
+  }
+  updateDots();
+}
+
+function navigate(dir) {
+  current = (current + dir + components.length) % components.length;
+  isFlipped = false;
+  document.getElementById('cardInner').classList.remove('flipped');
+  document.getElementById('flipBtn').textContent = 'FLIP CARD ↺';
+  document.getElementById('flipBtn').setAttribute('aria-label', 'Flip card to see definition');
+
+  // Re-trigger animation
+  const stage = document.getElementById('cardStage');
+  stage.style.animation = 'none';
+  stage.offsetHeight;
+  stage.style.animation = 'cardIn 0.35s ease';
+
+  renderCard();
+  announce(`Card ${current+1} of ${components.length}: ${components[current].name}, ${components[current].abbr}. Press Space to flip.`);
+}
+
+function updateProgress() {
+  const count = seen.size;
+  const total = components.length;
+  const pct = Math.round((count / total) * 100);
+
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = `Cards reviewed: ${count} of ${total}`;
+  document.getElementById('progressPct').textContent = `${pct}%`;
+
+  const bar = document.getElementById('progressBar');
+  bar.setAttribute('aria-valuenow', count);
+  bar.setAttribute('aria-valuetext', `${count} of ${total} cards reviewed, ${pct}%`);
+}
+
+function updateDots() {
+  const container = document.getElementById('navDots');
+  container.innerHTML = '';
+  components.forEach((comp, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'dot' + (i === current ? ' active' : seen.has(i) ? ' seen' : '');
+    dot.textContent = String(i + 1).padStart(2, '0');
+    dot.setAttribute('role', 'listitem');
+    dot.setAttribute('aria-label',
+      `Go to card ${i+1}: ${comp.name}${i === current ? ' (current)' : seen.has(i) ? ' (reviewed)' : ''}`);
+    dot.setAttribute('aria-current', i === current ? 'true' : 'false');
+    dot.onclick = (e) => {
+      e.stopPropagation();
+      current = i;
+      isFlipped = false;
+      document.getElementById('cardInner').classList.remove('flipped');
+      document.getElementById('flipBtn').textContent = 'FLIP CARD ↺';
+      renderCard();
+      announce(`Jumped to card ${i+1}: ${components[i].name}`);
+    };
+    container.appendChild(dot);
+  });
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+  const tag = document.activeElement.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+
+  if (e.key === 'ArrowLeft')  { e.preventDefault(); navigate(-1); }
+  if (e.key === 'ArrowRight') { e.preventDefault(); navigate(1); }
+
+  // Number keys 1–9 jump to card
+  const num = parseInt(e.key);
+  if (!isNaN(num) && num >= 1 && num <= components.length) {
+    e.preventDefault();
+    current = num - 1;
+    isFlipped = false;
+    document.getElementById('cardInner').classList.remove('flipped');
+    document.getElementById('flipBtn').textContent = 'FLIP CARD ↺';
+    renderCard();
+    announce(`Jumped to card ${num}: ${components[num-1].name}`);
+  }
+});
+
+renderCard();
+</script>
+</body>
+</html>
