@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IEEE 802.3 Ethernet Standards & Protocols - Interactive Guide</title>
+    <style>
+        :root {
+            --primary-color: #004080;
+            --primary-dark: #002b55;
+            --secondary-color: #2e7d32;
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-color: #212529;
+            --focus-ring: #ffbf47;
+            --border-color: #ced4da;
+            --highlight-bg: #e8f4f8;
+            --accent-blue: #0066cc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            padding: 0;
+            margin: 0;
+        }
+
+        /* ADA Compliance: Visible Focus States */
+        a:focus, button:focus, select:focus, input:focus, [tabindex="0"]:focus {
+            outline: 3px solid var(--focus-ring);
+            outline-offset: 3px;
+        }
+
+        /* Skip Link for Keyboard/Screen Reader Navigation */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 10px;
+            background: var(--primary-dark);
+            color: white;
+            padding: 8px 16px;
+            z-index: 1000;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: top 0.2s ease;
+        }
+
+        .skip-link:focus {
+            top: 10px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+            border-bottom: 5px solid var(--secondary-color);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+            color: #e0e0e0;
+        }
+
+        nav {
+            background-color: var(--primary-dark);
+            padding: 0.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.6rem 1rem;
+            border-radius: 4px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        nav a:hover, nav a:focus {
+            background-color: rgba(255, 255, 255, 0.2);
+            text-decoration: underline;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        section {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.6rem;
+        }
+
+        h3 {
+            color: var(--primary-dark);
+            margin: 1rem 0 0.5rem 0;
+            font-size: 1.25rem;
+        }
+
+        /* Controls Panel */
+        .control-panel {
+            background-color: var(--highlight-bg);
+            padding: 1.2rem;
+            border-radius: 6px;
+            border-left: 5px solid var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        select {
+            width: 100%;
+            max-width: 400px;
+            padding: 0.6rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.2rem;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* Tables (ADA Color-Contrast compliant) */
+        .table-responsive {
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 0.8rem;
+            border: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        /* Frame Visualizer Components */
+        .frame-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 1.5rem 0;
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+        .frame-field {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 0.5rem;
+            text-align: center;
+            border-radius: 4px;
+            cursor: pointer;
+            flex: 1 1 120px;
+            min-width: 110px;
+            border: 2px solid transparent;
+        }
+
+        .frame-field:hover, .frame-field:focus {
+            background-color: var(--accent-blue);
+            border-color: var(--focus-ring);
+        }
+
+        .frame-field .field-name {
+            font-weight: bold;
+            display: block;
+            font-size: 0.95rem;
+        }
+
+        .frame-field .field-size {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .info-card {
+            background-color: var(--highlight-bg);
+            border-left: 4px solid var(--secondary-color);
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+            min-height: 80px;
+        }
+
+        /* Simulator Console Output */
+        .sim-box {
+            border: 2px dashed var(--border-color);
+            padding: 1.5rem;
+            background: #fafafa;
+            border-radius: 6px;
+        }
+
+        .sim-log {
+            background: #111827;
+            color: #10b981;
+            font-family: "Courier New", Courier, monospace;
+            padding: 1rem;
+            border-radius: 4px;
+            height: 160px;
+            overflow-y: auto;
+            margin-top: 1rem;
+            font-size: 0.95rem;
+        }
+
+        /* Quiz Layout */
+        .quiz-option {
+            display: block;
+            margin: 0.5rem 0;
+            padding: 0.6rem;
+            background: #f8f9fa;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .quiz-option:hover {
+            background: #e9ecef;
+        }
+
+        .feedback {
+            font-weight: bold;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 4px;
+        }
+
+        .feedback.correct {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .feedback.incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        footer {
+            background-color: var(--primary-dark);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border-top: 4px solid var(--secondary-color);
+        }
+
+        @media (max-width: 768px) {
+            header h1 { font-size: 1.75rem; }
+            .frame-field { flex: 1 1 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Accessible Skip Link -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <header role="banner">
+        <h1>IEEE 802.3 Ethernet Standards & Protocols</h1>
+        <p>Interactive Learning Module | Intermediate Information & Communications Technology (ICT)</p>
+    </header>
+
+    <nav aria-label="Main Navigation">
+        <ul>
+            <li><a href="#standards">802.3 Standards</a></li>
+            <li><a href="#frame-structure">Ethernet Frame Structure</a></li>
+            <li><a href="#csma-cd">CSMA/CD Protocol Simulation</a></li>
+            <li><a href="#quiz">Knowledge Check</a></li>
+        </ul>
+    </nav>
+
+    <main id="main-content" tabindex="-1">
+
+        <!-- SECTION 1: IEEE Standards Filterable Table -->
+        <section id="standards" aria-labelledby="standards-heading">
+            <h2 id="standards-heading">1. IEEE 802.3 Ethernet Standards Reference</h2>
+            <p>
+                The IEEE 802.3 working group defines the physical layer (PHY) and media access control (MAC) sublayer for wired Ethernet connections. Select a standard from the dropdown below to explore its specific operational parameters.
+            </p>
+
+            <div class="control-panel">
+                <label for="standard-select">Filter by Ethernet Standard:</label>
+                <select id="standard-select" aria-controls="standards-tbody">
+                    <option value="all">-- Show All Standards --</option>
+                    <option value="10base-t">IEEE 802.3i (10BASE-T)</option>
+                    <option value="100base-tx">IEEE 802.3u (100BASE-TX Fast Ethernet)</option>
+                    <option value="1000base-t">IEEE 802.3ab (1000BASE-T Gigabit Ethernet)</option>
+                    <option value="10gbase-t">IEEE 802.3an (10GBASE-T)</option>
+                    <option value="poe">IEEE 802.3af/at (Power over Ethernet)</option>
+                </select>
+            </div>
+
+            <div class="table-responsive">
+                <table>
+                    <caption>Detailed Specifications for Selected Ethernet Standards</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">IEEE Standard</th>
+                            <th scope="col">Common Name</th>
+                            <th scope="col">Data Rate</th>
+                            <th scope="col">Media / Cable Type</th>
+                            <th scope="col">Max Segment Distance</th>
+                        </tr>
+                    </thead>
+                    <tbody id="standards-tbody" aria-live="polite">
+                        <!-- Content rendered dynamically via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Ethernet II Frame Interactive Explorer -->
+        <section id="frame-structure" aria-labelledby="frame-heading">
+            <h2 id="frame-heading">2. Interactive Ethernet II Frame Explorer</h2>
+            <p>
+                An Ethernet frame encapsulates Layer 3 packets (like IP) for transmission across physical media. Click or press <kbd>Enter</kbd> / <kbd>Space</kbd> on any frame field below to inspect its purpose, size, and operational role.
+            </p>
+
+            <div class="frame-container" role="region" aria-label="Interactive Ethernet Frame Visualization">
+                <button type="button" class="frame-field" data-field="preamble" aria-expanded="false" aria-controls="frame-info">
+                    <span class="field-name">Preamble & SFD</span>
+                    <span class="field-size">8 Bytes</span>
+                </button>
+                <button type="button" class="frame-field" data-field="dest-mac" aria-expanded="false" aria-controls="frame-info">
+                    <span class="field-name">Dest MAC Address</span>
+                    <span class="field-size">6 Bytes</span>
+                </button>
+                <button type="button" class="frame-field" data-field="src-mac" aria-expanded="false" aria-controls="frame-info">
+                    <span class="field-name">Source MAC Address</span>
+                    <span class="field-size">6 Bytes</span>
+                </button>
+                <button type="button" class="frame-field" data-field="ethertype" aria-expanded="false" aria-controls="frame-info">
+                    <span class="field-name">EtherType</span>
+                    <span class="field-size">2 Bytes</span>
+                </button>
+                <button type="button" class="frame-field" data-field="payload" aria-expanded="false" aria-controls="frame-info">
+                    <span class="field-name">Payload (Data)</span>
+                    <span class="field-size">46-1500 Bytes</span>
+                </button>
+                <button type="button" class="frame-field" data-field="fcs" aria-expanded="false" aria-controls="frame-info">
+                    <span class="field-name">FCS (CRC)</span>
+                    <span class="field-size">4 Bytes</span>
+                </button>
+            </div>
+
+            <div id="frame-info" class="info-card" aria-live="polite">
+                <h3>Field Inspector</h3>
+                <p>Select any field from the frame layout above to view its technical details.</p>
+            </div>
+        </section>
+
+        <!-- SECTION 3: CSMA/CD Simulation Console -->
+        <section id="csma-cd" aria-labelledby="csma-heading">
+            <h2 id="csma-heading">3. CSMA/CD Protocol Simulation</h2>
+            <p>
+                <strong>Carrier Sense Multiple Access with Collision Detection (CSMA/CD)</strong> is the media access control mechanism used in legacy half-duplex Ethernet environments.
+            </p>
+
+            <div class="sim-box">
+                <h3>Half-Duplex Bus Topology Console</h3>
+                <p>Use the buttons below to trigger frame transmissions across a shared bus network and observe the execution of CSMA/CD routines.</p>
+                
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0;">
+                    <button type="button" id="btn-transmit">Transmit Normal Frame</button>
+                    <button type="button" id="btn-collide" style="background-color: #c92a2a;">Simulate Network Collision</button>
+                </div>
+
+                <label for="sim-output">Simulation Terminal Log:</label>
+                <div id="sim-output" class="sim-log" role="log" aria-live="polite" aria-relevant="additions">
+                    > Console initialized. Shared bus medium is IDLE.<br>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: Knowledge Check Quiz -->
+        <section id="quiz" aria-labelledby="quiz-heading">
+            <h2 id="quiz-heading">4. Knowledge Check</h2>
+            <form id="quiz-form">
+                <fieldset style="border: none; margin-bottom: 1.5rem;">
+                    <legend style="font-weight: bold; font-size: 1.1rem; margin-bottom: 0.5rem;">
+                        Question 1: What is the primary role of the Frame Check Sequence (FCS) located at the trailer of an Ethernet frame?
+                    </legend>
+                    <label class="quiz-option">
+                        <input type="radio" name="q1" value="A"> A) Encrypt payload data to ensure Layer 2 security.
+                    </label>
+                    <label class="quiz-option">
+                        <input type="radio" name="q1" value="B"> B) Provide bit-level error detection using a Cyclic Redundancy Check (CRC) algorithm.
+                    </label>
+                    <label class="quiz-option">
+                        <input type="radio" name="q1" value="C"> C) Identify the upper-layer network protocol (e.g., IPv4 or IPv6).
+                    </label>
+                    <label class="quiz-option">
+                        <input type="radio" name="q1" value="D"> D) Determine the physical routing path across switches.
+                    </label>
+                </fieldset>
+
+                <button type="submit">Submit Answer</button>
+            </form>
+            <div id="quiz-feedback" class="feedback" style="display: none;" aria-live="polite"></div>
+        </section>
+
+    </main>
+
+    <footer role="contentinfo">
+        <p>&copy; 2026 Computer Networking & ICT Department.</p>
+        <p>Built according to WCAG 2.1 AA Accessibility Standards.</p>
+    </footer>
+
+    <script>
+        // Standards Data Store
+        const standardsData = [
+            { id: "10base-t", std: "802.3i", name: "10BASE-T", speed: "10 Mbps", cable: "Cat 3 or Cat 5 UTP", dist: "100 meters" },
+            { id: "100base-tx", std: "802.3u", name: "100BASE-TX (Fast Ethernet)", speed: "100 Mbps", cable: "Cat 5 / 5e UTP", dist: "100 meters" },
+            { id: "1000base-t", std: "802.3ab", name: "1000BASE-T (Gigabit Ethernet)", speed: "1000 Mbps (1 Gbps)", cable: "Cat 5e / Cat 6 UTP", dist: "100 meters" },
+            { id: "10gbase-t", std: "802.3an", name: "10GBASE-T", speed: "10 Gbps", cable: "Cat 6a / Cat 7 UTP", dist: "100 meters" },
+            { id: "poe", std: "802.3af/at", name: "Power over Ethernet (PoE / PoE+)", speed: "10/100/1000 Mbps + Power", cable: "Cat 5e or higher UTP", dist: "100 meters" }
+        ];
+
+        // Frame Data Store
+        const frameData = {
+            "preamble": {
+                title: "Preamble & Start Frame Delimiter (SFD)",
+                size: "8 Bytes total (7 Bytes Preamble + 1 Byte SFD)",
+                description: "Provides clock synchronization between sender and receiver NICs. The SFD (10101011) signals the boundary where the actual Ethernet frame header starts."
+            },
+            "dest-mac": {
+                title: "Destination MAC Address",
+                size: "6 Bytes (48 bits)",
+                description: "The hardware address of the intended receiving interface. Can be Unicast, Multicast, or Broadcast (FF:FF:FF:FF:FF:FF)."
+            },
+            "src-mac": {
+                title: "Source MAC Address",
+                size: "6 Bytes (48 bits)",
+                description: "The hardware address of the transmitting network interface card."
+            },
+            "ethertype": {
+                title: "EtherType / Length",
+                size: "2 Bytes",
+                description: "Indicates the upper-layer network protocol encapsulated in the payload (e.g., 0x0800 for IPv4, 0x86DD for IPv6, 0x0806 for ARP)."
+            },
+            "payload": {
+                title: "Payload (Data & Padding)",
+                size: "46 to 1500 Bytes (Standard MTU)",
+                description: "The encapsulated Layer 3 packet. If payload data is less than 46 bytes, padding bytes are automatically added to reach Ethernet's minimum required frame length of 64 bytes."
+            },
+            "fcs": {
+                title: "Frame Check Sequence (FCS)",
+                size: "4 Bytes",
+                description: "Contains a 32-bit Cyclic Redundancy Check (CRC) hash generated by the sender. The receiver recalculates this value; if mismatch occurs, corruption is detected and the frame is discarded."
+            }
+        };
+
+        // Render Table Function
+        function renderStandardsTable(filter = "all") {
+            const tbody = document.getElementById("standards-tbody");
+            tbody.innerHTML = "";
+
+            const filteredData = filter === "all" 
+                ? standardsData 
+                : standardsData.filter(item => item.id === filter);
+
+            filteredData.forEach(item => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <th scope="row">${item.std}</th>
+                    <td>${item.name}</td>
+                    <td>${item.speed}</td>
+                    <td>${item.cable}</td>
+                    <td>${item.dist}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Initialize Table
+        renderStandardsTable();
+
+        // Dropdown Event Listener
+        document.getElementById("standard-select").addEventListener("change", (e) => {
+            renderStandardsTable(e.target.value);
+        });
+
+        // Frame Field Interaction Handler
+        const frameFields = document.querySelectorAll(".frame-field");
+        const frameInfo = document.getElementById("frame-info");
+
+        frameFields.forEach(field => {
+            field.addEventListener("click", () => {
+                const key = field.getAttribute("data-field");
+                const data = frameData[key];
+
+                frameFields.forEach(f => f.setAttribute("aria-expanded", "false"));
+                field.setAttribute("aria-expanded", "true");
+
+                frameInfo.innerHTML = `
+                    <h3>${data.title} (${data.size})</h3>
+                    <p>${data.description}</p>
+                `;
+            });
+        });
+
+        // CSMA/CD Simulation Handler
+        const logContainer = document.getElementById("sim-output");
+        
+        function appendLog(message) {
+            const time = new Date().toLocaleTimeString();
+            logContainer.innerHTML += `> [${time}] ${message}<br>`;
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        document.getElementById("btn-transmit").addEventListener("click", () => {
+            appendLog("Host A: Carrier Sensing... Bus is IDLE.");
+            setTimeout(() => {
+                appendLog("Host A: Transmitting frame (Multiple Access)...");
+            }, 500);
+            setTimeout(() => {
+                appendLog("Host B: Frame received intact. FCS CRC check PASSED.");
+            }, 1000);
+        });
+
+        document.getElementById("btn-collide").addEventListener("click", () => {
+            appendLog("Host A: Carrier Sensing... Bus IDLE.");
+            appendLog("Host B: Carrier Sensing... Bus IDLE.");
+            setTimeout(() => {
+                appendLog("Host A & Host B transmit frames simultaneously!");
+            }, 500);
+            setTimeout(() => {
+                appendLog("<span style='color: #ef4444; font-weight: bold;'>COLLISION DETECTED! Voltage threshold exceeded.</span>");
+                appendLog("Host A & Host B broadcast 32-bit JAM SIGNAL across medium.");
+            }, 1000);
+            setTimeout(() => {
+                const backoffA = Math.floor(Math.random() * 10) + 1;
+                const backoffB = Math.floor(Math.random() * 10) + 1;
+                appendLog(`Truncated Binary Exponential Backoff activated. Host A waiting ${backoffA} slot times; Host B waiting ${backoffB} slot times before retrying.`);
+            }, 1600);
+        });
+
+        // Quiz Handler
+        document.getElementById("quiz-form").addEventListener("submit", (e) => {
+            e.preventDefault();
+            const selected = document.querySelector('input[name="q1"]:checked');
+            const feedback = document.getElementById("quiz-feedback");
+
+            feedback.style.display = "block";
+
+            if (!selected) {
+                feedback.className = "feedback incorrect";
+                feedback.textContent = "Please select an option before submitting.";
+                return;
+            }
+
+            if (selected.value === "B") {
+                feedback.className = "feedback correct";
+                feedback.innerHTML = "<strong>Correct!</strong> The FCS trailer uses Cyclic Redundancy Check (CRC) to detect frame-level corruption during physical layer transit.";
+            } else {
+                feedback.className = "feedback incorrect";
+                feedback.innerHTML = "<strong>Incorrect.</strong> Option B is correct: The FCS performs error detection at Layer 2 using CRC.";
+            }
+        });
+    </script>
+</body>
+</html>
